@@ -90,3 +90,14 @@ open -na "Google Chrome" --args --user-data-dir=/tmp/chrome-webnn \
   rejects sequences longer than 128 tokens.
 - In the playground, constants use `@scalar(v)` or `@bytes([...])` (little-endian), since the
   page has no weights file.
+
+## Publishing to GitHub Pages
+
+```bash
+wasm-pack build --target web --release --no-typescript --no-pack
+scripts/publish-pages.sh            # --no-push only assembles site/
+```
+
+The script copies the pages, `pkg/` and the vendor files the import map uses into `site/`, and
+force-pushes them as the `gh-pages` branch. The wasm is prebuilt locally, not in CI, because it
+links the local `../rustnn` checkout. Visitors need a browser with WebNN enabled.
