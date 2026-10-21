@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>rustnn WebNN Demo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <nav class="nav"><strong>Graph playground</strong> · <a href="embeddings.html">Embeddings</a></nav>
+    <h1>rustnn <span class="muted">on</span> browser WebNN</h1>
+    <p class="lede">
+      rustnn, compiled to WebAssembly, parses the <code>.webnn</code> graph and replays it
+      through this page's <code>MLGraphBuilder</code>. The browser compiles and runs it.
+    </p>
+    <div id="env" class="env"></div>
+  </header>
+
+  <main>
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Graph</h2>
+        <div class="controls">
+          <label>Example
+            <select id="example"></select>
+          </label>
+          <label>Context
+            <select id="power">
+              <option value="default">accelerated, default</option>
+              <option value="high-performance">accelerated, high performance</option>
+              <option value="low-power">accelerated, low power</option>
+              <option value="cpu">not accelerated</option>
+            </select>
+          </label>
+        </div>
+      </div>
+      <textarea id="source" spellcheck="false" aria-label=".webnn graph source"></textarea>
+      <div class="actions">
+        <button id="run" class="primary">Build &amp; run</button>
+        <button id="randomize">Randomize inputs</button>
+        <span id="status" class="status" role="status"></span>
+      </div>
+      <div id="ops" class="ops"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2>Inputs</h2></div>
+      <div id="inputs" class="tensors"><p class="muted">Pick an example.</p></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2>Outputs</h2><span id="timing" class="muted"></span></div>
+      <div id="outputs" class="tensors"><p class="muted">Run the graph to see results.</p></div>
+    </section>
+  </main>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>

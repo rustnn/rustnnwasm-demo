@@ -1,0 +1,22 @@
+[package]
+name = "rustnn-webnn-browser-demo"
+version = "0.1.0"
+edition = "2024"
+publish = false
+description = "Browser demo: rustnn parses a .webnn graph and builds it with the page's WebNN API"
+
+# Standalone crate; rustnn is expected in ../rustnn.
+[workspace]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+rustnn = { path = "../rustnn", default-features = false, features = ["webnn-runtime"] }
+webnn-graph = "0.4"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+serde-wasm-bindgen = "0.6"
+wasm-bindgen = "0.2.127"
+wasm-bindgen-futures = "0.4.77"
+js-sys = "0.3.104"

@@ -1,0 +1,6 @@
+# The WebNN bindings are unstable web-sys APIs and expect reference types.
+[build]
+target = "wasm32-unknown-unknown"
+
+[target.wasm32-unknown-unknown]
+rustflags = ["-C", "target-feature=+reference-types", "--cfg=web_sys_unstable_apis"]
