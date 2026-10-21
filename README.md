@@ -1,13 +1,15 @@
 # rustnn browser WebNN demos
 
-rustnn compiled to WebAssembly, building graphs on the browser's WebNN API. Two pages:
+rustnn compiled to WebAssembly, building graphs on the browser's WebNN API.
+Live at https://rustnn.github.io/rustnnwasm-demo/ (needs a browser with WebNN enabled). Two
+pages:
 
-- `index.html`, **graph playground**: edit a `.webnn` graph; rustnn parses it and builds it
-  through the browser's `MLGraphBuilder`, and the page runs it.
-- `embeddings.html`, **Transformers.js with a rustnn backend**: `pipeline('feature-extraction',
+- `index.html`, **Transformers.js with a rustnn backend**: `pipeline('feature-extraction',
   provider)` using the pluggable inference providers of
   [transformers.js#1732](https://github.com/huggingface/transformers.js/pull/1732), with
   `all-MiniLM-L6-v2` compared against the default ONNX Runtime pipeline.
+- `playground.html`, **graph playground**: edit a `.webnn` graph; rustnn parses it and builds it
+  through the browser's `MLGraphBuilder`, and the page runs it.
 
 rustnn does not wire tensors and dispatch for the browser backend yet, so both pages create
 tensors and call `dispatch` from JavaScript. See `../rustnn/docs/integration/webnn-browser.md`.
@@ -15,7 +17,7 @@ tensors and call `dispatch` from JavaScript. See `../rustnn/docs/integration/web
 ## Architecture (embeddings demo)
 
 ```
- embeddings.html / embeddings.js
+ index.html / embeddings.js
         │  pipeline('feature-extraction', provider)      extractor(texts, { pooling, normalize })
         ▼
 ┌──────────────────────────── Transformers.js (PR #1732) ────────────────────────────┐
@@ -50,7 +52,7 @@ python3 serve.py                                                    # http://127
 ```
 
 The embeddings page also needs the transformers.js PR branch, built in `vendor/` (gitignored)
-and mapped with an import map in `embeddings.html`:
+and mapped with an import map in `index.html`:
 
 ```bash
 git clone --depth 1 --branch nico/pluggable-inference-providers \

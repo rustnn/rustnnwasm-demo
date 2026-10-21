@@ -3,17 +3,30 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>rustnn WebNN Demo</title>
+  <title>rustnn Embeddings Demo</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "@huggingface/transformers": "./vendor/transformers.js/packages/transformers/dist/transformers.web.js",
+        "@huggingface/transformers-onnxruntime": "./vendor/transformers.js/packages/transformers-onnxruntime/dist/transformers-onnxruntime.web.js",
+        "onnxruntime-web/webgpu": "./vendor/transformers.js/packages/transformers-onnxruntime/node_modules/onnxruntime-web/dist/ort.webgpu.bundle.min.mjs",
+        "onnxruntime-common": "./vendor/transformers.js/packages/transformers-onnxruntime/node_modules/onnxruntime-common/dist/esm/index.js"
+      }
+    }
+  </script>
 </head>
 <body>
   <header>
-    <nav class="nav"><strong>Graph playground</strong> · <a href="embeddings.html">Embeddings</a></nav>
-    <h1>rustnn <span class="muted">on</span> browser WebNN</h1>
+    <nav class="nav"><strong>Embeddings</strong> · <a href="playground.html">Graph playground</a></nav>
+    <h1>Transformers.js <span class="muted">with a</span> rustnn backend</h1>
     <p class="lede">
-      rustnn, compiled to WebAssembly, parses the <code>.webnn</code> graph and replays it
-      through this page's <code>MLGraphBuilder</code>. The browser compiles and runs it.
+      <code>pipeline('feature-extraction', provider)</code> from
+      <a href="https://github.com/huggingface/transformers.js/pull/1732">transformers.js#1732</a>.
+      Transformers.js tokenizes and pools; rustnn (wasm) builds
+      <code>all-MiniLM-L6-v2</code> on the browser's WebNN, which runs it. The ONNX Runtime
+      pipeline is the reference.
     </p>
     <div id="env" class="env"></div>
   </header>
@@ -21,12 +34,9 @@
   <main>
     <section class="panel">
       <div class="panel-head">
-        <h2>Graph</h2>
+        <h2>Sentences</h2>
         <div class="controls">
-          <label>Example
-            <select id="example"></select>
-          </label>
-          <label>Context
+          <label>WebNN context
             <select id="power">
               <option value="default">accelerated, default</option>
               <option value="high-performance">accelerated, high performance</option>
@@ -36,26 +46,28 @@
           </label>
         </div>
       </div>
-      <textarea id="source" spellcheck="false" aria-label=".webnn graph source"></textarea>
+      <textarea id="sentences" spellcheck="false" aria-label="sentences, one per line">The cat sits on the mat.
+A kitten is resting on a rug.
+Rust compiles to WebAssembly.
+WebNN runs neural networks in the browser.
+The stock market fell sharply today.</textarea>
       <div class="actions">
-        <button id="run" class="primary">Build &amp; run</button>
-        <button id="randomize">Randomize inputs</button>
+        <button id="run-rustnn" class="primary">Embed with rustnn (WebNN)</button>
+        <button id="run-ort">Embed with ONNX Runtime</button>
         <span id="status" class="status" role="status"></span>
       </div>
-      <div id="ops" class="ops"></div>
     </section>
 
     <section class="panel">
-      <div class="panel-head"><h2>Inputs</h2></div>
-      <div id="inputs" class="tensors"><p class="muted">Pick an example.</p></div>
-    </section>
-
-    <section class="panel">
-      <div class="panel-head"><h2>Outputs</h2><span id="timing" class="muted"></span></div>
-      <div id="outputs" class="tensors"><p class="muted">Run the graph to see results.</p></div>
+      <div class="panel-head"><h2>Cosine similarity</h2><span id="timing" class="muted"></span></div>
+      <div class="matrices">
+        <div><h3>rustnn · WebNN</h3><div id="matrix-rustnn" class="matrix"><p class="muted">Not run yet.</p></div></div>
+        <div><h3>ONNX Runtime</h3><div id="matrix-ort" class="matrix"><p class="muted">Not run yet.</p></div></div>
+      </div>
+      <p id="parity" class="parity"></p>
     </section>
   </main>
 
-  <script type="module" src="main.js"></script>
+  <script type="module" src="embeddings.js"></script>
 </body>
 </html>

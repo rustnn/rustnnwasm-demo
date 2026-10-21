@@ -15,10 +15,10 @@ ort_common="$tjs/transformers-onnxruntime/node_modules/onnxruntime-common/dist/e
 cd "$root"
 rm -rf "$site"
 mkdir -p "$site"
-cp index.html main.js embeddings.html embeddings.js rustnn-provider.js style.css "$site/"
+cp index.html embeddings.js playground.html main.js rustnn-provider.js style.css "$site/"
 mkdir -p "$site/pkg"
 cp pkg/rustnn_webnn_browser_demo.js pkg/rustnn_webnn_browser_demo_bg.wasm "$site/pkg/"
-# Same paths as the import map in embeddings.html; -L copies through pnpm's symlinks.
+# Same paths as the import map in index.html; -L copies through pnpm's symlinks.
 for path in \
   "$tjs/transformers/dist/transformers.web.js" \
   "$tjs/transformers-onnxruntime/dist/transformers-onnxruntime.web.js" \
