@@ -46,7 +46,7 @@ tensors and call `dispatch` from JavaScript. See `../rustnn/docs/integration/web
 ```bash
 cd rustnnwasm-demo
 wasm-pack build --target web --release --no-typescript --no-pack   # writes pkg/
-python3 -m http.server 8137                                         # any static server works
+python3 serve.py                                                    # http://127.0.0.1:8137/, no-cache headers
 ```
 
 The embeddings page also needs the transformers.js PR branch, built in `vendor/` (gitignored)
@@ -60,6 +60,9 @@ npm exec --yes --package=pnpm@10.28.1 -- pnpm install
 npm exec --yes --package=pnpm@10.28.1 -- pnpm \
   --filter @huggingface/transformers-onnxruntime --filter @huggingface/transformers build
 ```
+
+`serve.py` makes the browser revalidate every file, so a rebuilt `pkg/` or edited JavaScript
+is picked up on reload (`python3 -m http.server` lets Chrome cache them).
 
 Open http://localhost:8137/ in a browser with WebNN enabled. For Chrome, either turn on
 `chrome://flags/#web-machine-learning-neural-network` or start a separate instance:
@@ -80,6 +83,9 @@ open -na "Google Chrome" --args --user-data-dir=/tmp/chrome-webnn \
 - Chrome on macOS accepts only `float32`, `float16` and `int32` inputs and has no int64
   constants. `loadWebnnModel` narrows int64 to int32 when `opSupportLimits()` lacks int64; the
   provider then writes `Int32Array` inputs.
+- The embeddings page needs rustnn's WebNN converter to lower `squeeze` and `unsqueeze` (not
+  WebNN operations) to `reshape`, as the specification's emulation does; `../rustnn` carries that
+  change.
 - The MiniLM WebNN graph has a fixed `[1, 128]` input. The provider runs one row at a time and
   rejects sequences longer than 128 tokens.
 - In the playground, constants use `@scalar(v)` or `@bytes([...])` (little-endian), since the

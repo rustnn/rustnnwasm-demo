@@ -65,6 +65,25 @@ export class RustnnInferenceProvider {
     return ["config.json", ...MODEL_FILES];
   }
 
+  // The graph files live in `artifactModelId`, not in `modelId`: answer cache and size queries
+  // for them there, and leave `config.json` to the host.
+  async getModelArtifactMetadata(file, options) {
+    if (!MODEL_FILES.includes(file)) return null;
+    if (!options.getModelFileMetadata) throw new Error("Transformers.js did not provide `getModelFileMetadata()`.");
+    const metadata = await options.getModelFileMetadata(
+      this.artifactModelId,
+      file,
+      artifactOptions(options, this.revision),
+    );
+    return metadata.exists ? { size: metadata.size, fromCache: metadata.fromCache } : null;
+  }
+
+  async deleteModelArtifact(file, options) {
+    if (!MODEL_FILES.includes(file)) return false;
+    if (!options.deleteModelFile) throw new Error("Transformers.js did not provide `deleteModelFile()`.");
+    return options.deleteModelFile(this.artifactModelId, file, artifactOptions(options, this.revision));
+  }
+
   async load(options) {
     if (options.task && options.task !== "feature-extraction") {
       throw new Error(`rustnn provider does not support the "${options.task}" task.`);

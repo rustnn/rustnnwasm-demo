@@ -143,6 +143,12 @@ fn built(graph: MlGraph, graph_info: &GraphInfo) -> Result<JsValue, JsError> {
     Ok(result.into())
 }
 
+/// Reports Rust panics with their message in the browser console.
+#[wasm_bindgen(start)]
+pub fn start() {
+    console_error_panic_hook::set_once();
+}
+
 /// Parses `.webnn` text and returns its operations, inputs and outputs.
 #[wasm_bindgen(js_name = inspectGraph)]
 pub fn inspect_graph(text: &str) -> Result<JsValue, JsError> {
